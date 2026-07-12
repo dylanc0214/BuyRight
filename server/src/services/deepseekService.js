@@ -309,8 +309,33 @@ async function generateGeneralAnswer(userMessage, conversationHistory = [], lang
   });
 }
 
+async function callDeepSeekWithTools(messages, tools) {
+  const key = getKey();
+  if (!key || key === 'your_deepseek_api_key_here') {
+    throw new Error('DEEPSEEK_API_KEY not configured');
+  }
+  const isReasoning = /flash|reasoner|r1/i.test(String(DEEPSEEK_MODEL));
+  const body = {
+    model: DEEPSEEK_MODEL,
+    messages,
+    tools,
+    tool_choice: 'auto',
+    max_tokens: isReasoning ? 4000 : 1500,
+    temperature: 0.7,
+  };
+  const response = await axios.post(`${DEEPSEEK_API_URL}/chat/completions`, body, {
+    headers: {
+      Authorization: `Bearer ${key}`,
+      'Content-Type': 'application/json',
+    },
+    timeout: 30000,
+  });
+  return response.data.choices[0].message;
+}
+
 module.exports = {
   callDeepSeek,
+  callDeepSeekWithTools,
   extractCarIntent,
   generateResultsAnswer,
   generateSellAnswer,
