@@ -25,6 +25,7 @@ export default function Account() {
   const [enquiries, setEnquiries] = useState([]);
   const [loading, setLoading] = useState(true);
   const [responding, setResponding] = useState(null);
+  const [offerError, setOfferError] = useState('');
 
   useEffect(() => {
     Promise.all([getMySubmissions().catch(() => ({ submissions: [] })), getMyEnquiries().catch(() => ({ enquiries: [] }))])
@@ -34,6 +35,7 @@ export default function Account() {
 
   async function handleOfferResponse(offerId, decision) {
     setResponding(offerId);
+    setOfferError('');
     try {
       await respondToOffer(offerId, decision);
       setSubmissions((prev) => prev.map((s) => {
@@ -42,7 +44,7 @@ export default function Account() {
         }
         return s;
       }));
-    } catch { /* non-fatal */ }
+    } catch { setOfferError('Action failed. Please try again.'); }
     finally { setResponding(null); }
   }
 
@@ -87,6 +89,7 @@ export default function Account() {
                           BuyRight offer: <span style={{ color: 'var(--primary)' }}>RM {Number(s.latest_offer.offer_price).toLocaleString()}</span>
                         </div>
                         {s.latest_offer.notes && <p style={{ fontSize: 13, color: 'var(--text-dim)', marginBottom: 12 }}>{s.latest_offer.notes}</p>}
+                        {offerError && <div style={{ color: 'var(--red)', fontSize: 13, marginBottom: 10 }}>{offerError}</div>}
                         <div style={{ display: 'flex', gap: 10 }}>
                           <button className="btn-primary" style={{ padding: '8px 20px', fontSize: 14 }} onClick={() => handleOfferResponse(s.latest_offer.id, 'accepted')} disabled={responding === s.latest_offer.id}>Accept</button>
                           <button className="btn-outline" style={{ padding: '8px 20px', fontSize: 14, borderColor: 'var(--red)', color: 'var(--red)' }} onClick={() => handleOfferResponse(s.latest_offer.id, 'rejected')} disabled={responding === s.latest_offer.id}>Reject</button>

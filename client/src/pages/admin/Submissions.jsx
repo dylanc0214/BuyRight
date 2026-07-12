@@ -15,18 +15,21 @@ export default function Submissions() {
   }, []);
 
   async function updateStatus(id, status) {
-    await adminUpdateSubmission(id, { status });
-    setSubs((prev) => prev.map((s) => s.id === id ? { ...s, status } : s));
+    try {
+      await adminUpdateSubmission(id, { status });
+      setSubs((prev) => prev.map((s) => s.id === id ? { ...s, status } : s));
+    } catch { alert('Status update failed. Please try again.'); }
   }
 
   async function sendOffer() {
-    if (!offerPrice) return;
+    const price = Number(offerPrice);
+    if (!offerPrice || isNaN(price)) return;
     setSending(true);
     try {
-      await adminSendOffer({ submission_id: offerModal.id, offer_price: Number(offerPrice), notes: offerNote || undefined });
+      await adminSendOffer({ submission_id: offerModal.id, offer_price: price, notes: offerNote || undefined });
       setSubs((prev) => prev.map((s) => s.id === offerModal.id ? { ...s, status: 'offer_sent' } : s));
       setOfferModal(null); setOfferPrice(''); setOfferNote('');
-    } catch { /* non-fatal */ }
+    } catch { alert('Failed to send offer. Please try again.'); }
     finally { setSending(false); }
   }
 

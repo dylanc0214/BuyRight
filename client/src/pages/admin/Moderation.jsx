@@ -8,8 +8,10 @@ export default function Moderation() {
   useEffect(() => { adminGetEnquiries().then((d) => setItems(d.enquiries || [])).finally(() => setLoading(false)); }, []);
 
   async function markReplied(id) {
-    await adminUpdateEnquiry(id, { status: 'replied' });
-    setItems((prev) => prev.map((i) => i.id === id ? { ...i, status: 'replied' } : i));
+    try {
+      await adminUpdateEnquiry(id, { status: 'replied' });
+      setItems((prev) => prev.map((i) => i.id === id ? { ...i, status: 'replied' } : i));
+    } catch { alert('Update failed. Please try again.'); }
   }
 
   return (

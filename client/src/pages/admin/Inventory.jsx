@@ -22,17 +22,19 @@ export default function Inventory() {
     e.preventDefault();
     setSaving(true);
     try {
-      const { car } = await adminAddCar({ ...form, year: Number(form.year), price: Number(form.price), mileage_km: Number(form.mileage_km), dealscore: Number(form.dealscore), market_value_min: Number(form.market_value_min || form.price), market_value_max: Number(form.market_value_max || form.price), engine_cc: form.engine_cc ? Number(form.engine_cc) : undefined, seats: Number(form.seats || 5) });
+      const { car } = await adminAddCar({ ...form, year: Number(form.year), price: Number(form.price), mileage_km: Number(form.mileage_km), dealscore: form.dealscore ? Number(form.dealscore) : 50, market_value_min: Number(form.market_value_min || form.price), market_value_max: Number(form.market_value_max || form.price), engine_cc: form.engine_cc ? Number(form.engine_cc) : undefined, seats: Number(form.seats || 5) });
       setCars((c) => [car, ...c]);
       setShowModal(false);
       setForm(BLANK_FORM);
-    } catch { /* non-fatal */ }
+    } catch { alert('Failed to add car. Please try again.'); }
     finally { setSaving(false); }
   }
 
   async function markSold(id) {
-    await adminUpdateCar(id, { status: 'sold' });
-    setCars((c) => c.map((car) => car.id === id ? { ...car, status: 'sold' } : car));
+    try {
+      await adminUpdateCar(id, { status: 'sold' });
+      setCars((c) => c.map((car) => car.id === id ? { ...car, status: 'sold' } : car));
+    } catch { alert('Update failed. Please try again.'); }
   }
 
   return (
@@ -46,7 +48,7 @@ export default function Inventory() {
           <table style={{ width: '100%', borderCollapse: 'collapse' }}>
             <thead>
               <tr style={{ background: 'var(--bg-muted)' }}>
-                {['Car','Price','Mileage','Deal','Status',''].map((h) => (
+                {['Car','Price','Mileage','DealScore','Status',''].map((h) => (
                   <th key={h} style={{ padding: '11px 16px', textAlign: 'left', fontSize: 12, fontWeight: 600, color: 'var(--text-secondary)', textTransform: 'uppercase', letterSpacing: '0.04em' }}>{h}</th>
                 ))}
               </tr>

@@ -11,8 +11,10 @@ export default function Inspections() {
   }, []);
 
   async function toggleComplete(id, completed) {
-    await adminUpdateInspection(id, { completed: !completed });
-    setItems((prev) => prev.map((i) => i.id === id ? { ...i, completed: !completed } : i));
+    try {
+      await adminUpdateInspection(id, { completed: !completed });
+      setItems((prev) => prev.map((i) => i.id === id ? { ...i, completed: !completed } : i));
+    } catch { alert('Update failed. Please try again.'); }
   }
 
   return (

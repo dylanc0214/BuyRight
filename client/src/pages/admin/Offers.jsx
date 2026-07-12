@@ -16,13 +16,13 @@ export default function Offers() {
   }, []);
 
   async function send(sub) {
-    const price = prices[sub.id];
-    if (!price) return;
+    const price = Number(prices[sub.id]);
+    if (!prices[sub.id] || isNaN(price)) return;
     setSending(sub.id);
     try {
-      await adminSendOffer({ submission_id: sub.id, offer_price: Number(price), notes: notes[sub.id] });
+      await adminSendOffer({ submission_id: sub.id, offer_price: price, notes: notes[sub.id] });
       setQueue((q) => q.filter((s) => s.id !== sub.id));
-    } catch { /* non-fatal */ }
+    } catch { alert('Failed to send offer. Please try again.'); }
     finally { setSending(null); }
   }
 

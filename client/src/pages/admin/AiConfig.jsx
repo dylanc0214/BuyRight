@@ -44,10 +44,11 @@ export default function AiConfig() {
           </label>
         </ConfigRow>
 
-        <div style={{ borderTop: '1px solid var(--border)', paddingTop: 20 }}>
+        <div style={{ borderTop: '1px solid var(--border)', paddingTop: 20, display: 'flex', alignItems: 'center', gap: 16 }}>
           <button className="btn-primary" style={{ padding: '10px 24px' }} onClick={save}>
-            {saved ? 'Saved ✓' : 'Save changes'}
+            {saved ? 'Applied ✓' : 'Apply for session'}
           </button>
+          <span style={{ fontSize: 12, color: 'var(--text-faint)' }}>Session only — persist via server .env</span>
         </div>
       </div>
     </div>
