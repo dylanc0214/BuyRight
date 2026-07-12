@@ -20,11 +20,17 @@ export default function Register() {
     setLoading(true);
     try {
       await registerApi(form);
+    } catch (err) {
+      setError(err.message === 'email_taken' ? 'That email is already registered.' : 'Something went wrong. Try again.');
+      setLoading(false);
+      return;
+    }
+    try {
       const { token, user } = await loginApi({ email: form.email, password: form.password });
       login(token, user);
       navigate('/account');
-    } catch (err) {
-      setError(err.message === 'email_taken' ? 'That email is already registered.' : 'Something went wrong. Try again.');
+    } catch {
+      navigate('/login?registered=1');
     } finally {
       setLoading(false);
     }

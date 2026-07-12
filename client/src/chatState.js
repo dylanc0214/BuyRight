@@ -15,11 +15,17 @@ function stripOptions(content) {
 }
 
 export function useChat(language = 'en') {
-  const stored = (() => { try { return JSON.parse(localStorage.getItem(STORAGE_KEY)) || {}; } catch { return {}; } })();
   const welcome = WELCOME[language] || WELCOME.en;
 
-  const [messages, setMessages] = useState(() => stored.messages?.length ? stored.messages : [{ ...welcome, content: stripOptions(welcome.content) }]);
-  const [conversationId, setConversationId] = useState(() => stored.conversationId || null);
+  const [messages, setMessages] = useState(() => {
+    try {
+      const stored = JSON.parse(localStorage.getItem(STORAGE_KEY)) || {};
+      return stored.messages?.length ? stored.messages : [{ ...welcome, content: stripOptions(welcome.content) }];
+    } catch { return [{ ...welcome, content: stripOptions(welcome.content) }]; }
+  });
+  const [conversationId, setConversationId] = useState(() => {
+    try { return JSON.parse(localStorage.getItem(STORAGE_KEY))?.conversationId || null; } catch { return null; }
+  });
   const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {

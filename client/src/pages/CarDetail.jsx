@@ -24,6 +24,7 @@ export default function CarDetail() {
   const [enquiryMsg, setEnquiryMsg] = useState('');
   const [submitted, setSubmitted] = useState(false);
   const [submitting, setSubmitting] = useState(false);
+  const [enquiryError, setEnquiryError] = useState('');
 
   useEffect(() => {
     getCar(id)
@@ -38,8 +39,9 @@ export default function CarDetail() {
     try {
       await createEnquiry({ car_id: Number(id), message: enquiryMsg });
       setSubmitted(true);
-    } catch { /* non-fatal */ }
-    finally { setSubmitting(false); }
+    } catch {
+      setEnquiryError('Failed to send. Please try again.');
+    } finally { setSubmitting(false); }
   }
 
   if (loading) return <div className="page container" style={{ paddingTop: 60, color: 'var(--text-faint)' }}>Loading…</div>;
@@ -113,14 +115,12 @@ export default function CarDetail() {
               <button
                 className="btn-primary"
                 style={{ width: '100%', marginBottom: 10, padding: 14, fontSize: 15 }}
-                onClick={() => setShowModal(true)}
+                onClick={() => { if (!user) { navigate('/login'); return; } setShowModal(true); }}
               >
                 Contact BuyRight to buy
               </button>
-              <Link to="/chat">
-                <button className="btn-outline" style={{ width: '100%', padding: 14, fontSize: 15 }}>
-                  Ask AI about this car
-                </button>
+              <Link to="/chat" className="btn-outline" style={{ display: 'block', width: '100%', padding: 14, fontSize: 15, textAlign: 'center', boxSizing: 'border-box', textDecoration: 'none' }}>
+                Ask AI about this car
               </Link>
             </div>
           </div>
@@ -148,8 +148,9 @@ export default function CarDetail() {
                   placeholder="Optional message — e.g. preferred time to call, questions about the car…"
                   value={enquiryMsg}
                   onChange={(e) => setEnquiryMsg(e.target.value)}
-                  style={{ resize: 'none', marginBottom: 16 }}
+                  style={{ resize: 'none', marginBottom: 12 }}
                 />
+                {enquiryError && <div style={{ color: 'var(--red)', fontSize: 13, marginBottom: 12 }}>{enquiryError}</div>}
                 <div style={{ display: 'flex', gap: 10 }}>
                   <button className="btn-outline" style={{ flex: 1 }} onClick={() => setShowModal(false)}>Cancel</button>
                   <button className="btn-primary" style={{ flex: 1 }} onClick={handleEnquiry} disabled={submitting}>
