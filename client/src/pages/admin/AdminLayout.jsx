@@ -1,13 +1,73 @@
-import { Outlet } from 'react-router-dom';
+// client/src/pages/admin/AdminLayout.jsx
+import { NavLink, Outlet, useNavigate } from 'react-router-dom';
+import { useAuth } from '../../context/AuthContext';
+
+const NAV = [
+  { to: '/admin',              label: 'Overview',     exact: true },
+  { to: '/admin/submissions',  label: 'Submissions'               },
+  { to: '/admin/inspections',  label: 'Inspections'               },
+  { to: '/admin/offers',       label: 'Make Offers'               },
+  { to: '/admin/inventory',    label: 'Inventory'                 },
+  { to: '/admin/buyers',       label: 'Buyers'                    },
+  { to: '/admin/moderation',   label: 'Moderation'                },
+  { to: '/admin/ai',           label: 'AI Config'                 },
+];
+
 export default function AdminLayout() {
+  const { user, logout } = useAuth();
+  const navigate = useNavigate();
+
+  function handleLogout() { logout(); navigate('/'); }
+
   return (
-    <div style={{display:'flex'}}>
-      <nav style={{width:200,background:'#fbfaf8',padding:'20px',borderRight:'1px solid #efece5'}}>
-        <p>Admin Nav</p>
-      </nav>
-      <div style={{flex:1,padding:24}}>
+    <div style={{ display: 'flex', height: '100vh', background: 'var(--bg)' }}>
+      {/* Sidebar */}
+      <aside style={{ width: 240, background: 'var(--surface)', borderRight: '1px solid var(--border)', display: 'flex', flexDirection: 'column', flexShrink: 0 }}>
+        {/* Brand */}
+        <div style={{ padding: '20px 20px 16px', borderBottom: '1px solid var(--border)' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+            <span style={{ background: 'var(--primary)', color: '#fff', fontWeight: 800, fontSize: 13, width: 28, height: 28, borderRadius: 7, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>BR</span>
+            <div>
+              <div style={{ fontWeight: 700, fontSize: 14 }}>BuyRight</div>
+              <div style={{ fontSize: 11, color: 'var(--text-faint)' }}>Admin</div>
+            </div>
+          </div>
+        </div>
+
+        {/* Nav */}
+        <nav style={{ flex: 1, padding: '12px 10px', overflowY: 'auto' }}>
+          {NAV.map(({ to, label, exact }) => (
+            <NavLink
+              key={to}
+              to={to}
+              end={exact}
+              style={({ isActive }) => ({
+                display: 'block',
+                padding: '9px 12px',
+                borderRadius: 8,
+                marginBottom: 2,
+                fontSize: 14,
+                fontWeight: isActive ? 600 : 400,
+                color: isActive ? 'var(--primary)' : 'var(--text-dim)',
+                background: isActive ? 'var(--primary-soft)' : 'transparent',
+                textDecoration: 'none',
+                transition: 'background 0.12s',
+              })}
+            >{label}</NavLink>
+          ))}
+        </nav>
+
+        {/* Footer */}
+        <div style={{ padding: '16px 20px', borderTop: '1px solid var(--border)' }}>
+          <div style={{ fontSize: 13, color: 'var(--text-secondary)', marginBottom: 8 }}>{user?.name}</div>
+          <button onClick={handleLogout} style={{ color: 'var(--red)', fontSize: 13, background: 'none', border: 'none', cursor: 'pointer', padding: 0 }}>Sign out</button>
+        </div>
+      </aside>
+
+      {/* Main content */}
+      <main style={{ flex: 1, overflowY: 'auto' }}>
         <Outlet />
-      </div>
+      </main>
     </div>
   );
 }
