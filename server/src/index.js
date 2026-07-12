@@ -6,6 +6,8 @@ const pool = require('./services/db');
 const chatRouter = require('./routes/chat');
 const carsRouter = require('./routes/cars');
 const authRouter = require('./routes/auth');
+const submissionsRouter = require('./routes/submissions');
+const offersRouter = require('./routes/offers');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -16,6 +18,8 @@ app.use(express.json({ limit: '10mb' }));
 app.use('/api/auth', authRouter);
 app.use('/api/chat', chatRouter);
 app.use('/api/cars', carsRouter);
+app.use('/api/submissions', submissionsRouter);
+app.use('/api/offers', offersRouter);
 
 app.get('/api/health', async (req, res) => {
   try {
