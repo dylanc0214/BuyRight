@@ -92,3 +92,4 @@ KeretaAI/
 | GET | `/api/cars` | Paginated car list (filterable) |
 | GET | `/api/cars/brands` | Distinct brands with counts |
 | GET | `/api/cars/:id` | Single car with seller info |
+# BuyRight
