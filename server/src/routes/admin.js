@@ -123,7 +123,7 @@ router.post('/offers', async (req, res) => {
 router.get('/buyers', async (req, res) => {
   try {
     const { rows } = await pool.query(
-      `SELECT u.*, COUNT(e.id)::int AS enquiry_count
+      `SELECT u.id, u.name, u.email, u.phone, u.role, u.created_at, COUNT(e.id)::int AS enquiry_count
        FROM users u LEFT JOIN enquiries e ON e.user_id=u.id
        WHERE u.role='user'
        GROUP BY u.id ORDER BY u.created_at DESC`
