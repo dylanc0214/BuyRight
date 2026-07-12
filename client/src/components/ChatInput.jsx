@@ -1,38 +1,55 @@
 import { useState } from 'react';
 
-const PLACEHOLDERS = {
-  en: 'e.g. "Honda SUV under RM100k in Penang" or "sell my 2019 Myvi, 60k km"',
-  ms: 'cth. "SUV Honda bawah RM100k di Penang" atau "jual Myvi 2019 saya, 60k km"',
-  zh: '例如 "槟城10万以下的Honda SUV" 或 "卖掉我的2019 Myvi，6万公里"',
-};
+export default function ChatInput({ onSend, disabled, placeholder = 'Ask about cars, or say "I want to sell my car"…' }) {
+  const [value, setValue] = useState('');
 
-export default function ChatInput({ onSend, disabled, language }) {
-  const [text, setText] = useState('');
-
-  const submit = () => {
-    if (!text.trim() || disabled) return;
+  function handleSend() {
+    const text = value.trim();
+    if (!text || disabled) return;
+    setValue('');
     onSend(text);
-    setText('');
-  };
+  }
 
   return (
-    <footer className="input-bar">
+    <div style={{
+      borderTop: '1px solid var(--border)',
+      background: 'var(--surface)',
+      padding: '12px 16px',
+      display: 'flex',
+      gap: 10,
+      alignItems: 'flex-end',
+    }}>
       <textarea
-        className="input-field"
+        value={value}
+        onChange={(e) => setValue(e.target.value)}
+        onKeyDown={(e) => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); handleSend(); } }}
+        placeholder={placeholder}
         rows={1}
-        value={text}
-        placeholder={PLACEHOLDERS[language] || PLACEHOLDERS.en}
-        onChange={(e) => setText(e.target.value)}
-        onKeyDown={(e) => {
-          if (e.key === 'Enter' && !e.shiftKey) {
-            e.preventDefault();
-            submit();
-          }
+        style={{
+          flex: 1,
+          resize: 'none',
+          background: 'var(--bg-muted)',
+          border: '1.5px solid transparent',
+          borderRadius: 12,
+          padding: '10px 14px',
+          fontSize: 15,
+          color: 'var(--text)',
+          lineHeight: 1.5,
+          transition: 'border-color 0.15s',
+          maxHeight: 120,
+          overflowY: 'auto',
         }}
+        onFocus={(e) => { e.target.style.borderColor = 'var(--primary)'; e.target.style.background = '#fff'; }}
+        onBlur={(e) => { e.target.style.borderColor = 'transparent'; e.target.style.background = 'var(--bg-muted)'; }}
       />
-      <button className="btn-send" onClick={submit} disabled={disabled || !text.trim()}>
+      <button
+        onClick={handleSend}
+        disabled={disabled || !value.trim()}
+        className="btn-primary"
+        style={{ padding: '10px 20px', fontSize: 14, flexShrink: 0 }}
+      >
         Send
       </button>
-    </footer>
+    </div>
   );
 }
