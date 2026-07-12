@@ -1,0 +1,22 @@
+{
+  "name": "keretaai-server",
+  "version": "1.0.0",
+  "description": "KeretaAI - Second-hand car AI chatbot backend",
+  "main": "src/index.js",
+  "type": "commonjs",
+  "scripts": {
+    "start": "node src/index.js",
+    "dev": "node --watch src/index.js",
+    "check": "node scripts/selfcheck.js"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "dependencies": {
+    "axios": "^1.7.0",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.0",
+    "express": "^4.19.0",
+    "pg": "^8.12.0"
+  }
+}

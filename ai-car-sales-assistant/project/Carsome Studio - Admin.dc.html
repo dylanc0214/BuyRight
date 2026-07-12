@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+
+<helmet>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+  html, body, #root { height:100%; }
+  body { margin:0; background:#fbfaf8; -webkit-font-smoothing:antialiased; }
+  * { box-sizing:border-box; }
+  a { color:#c5470f; text-decoration:none; }
+  a:hover { color:#a83b0c; text-decoration:underline; }
+  ::-webkit-scrollbar { width:9px; height:9px; }
+  ::-webkit-scrollbar-thumb { background:#e4e1da; border-radius:8px; }
+  ::-webkit-scrollbar-track { background:transparent; }
+  input:focus, textarea:focus, select:focus, button:focus { outline:none; }
+  @keyframes adFadeIn { from { opacity:0; transform:translateY(6px); } to { opacity:1; transform:translateY(0); } }
+  input[type=range] { -webkit-appearance:none; height:6px; border-radius:999px; background:#efece5; }
+  input[type=range]::-webkit-slider-thumb { -webkit-appearance:none; width:18px; height:18px; border-radius:50%; background:#ff5a2b; cursor:pointer; border:2px solid #fff; box-shadow:0 0 0 1px #e4e1da; }
+</style>
+</helmet>
+
+<div style="position:relative;display:flex;height:100vh;width:100%;font-family:-apple-system,BlinkMacSystemFont,'Helvetica Neue',Helvetica,Arial,sans-serif;color:#1a1a1a;background:#fbfaf8;">
+
+  <div style="position:fixed;bottom:14px;left:14px;z-index:30;display:flex;gap:6px;background:#1a1a1a;border-radius:999px;padding:5px;box-shadow:0 4px 14px rgba(0,0,0,.18);">
+    <a href="Ask Carsome - Buyer Chat.dc.html" style="padding:6px 12px;font-size:11px;font-weight:600;color:#c9c4b8;">Buyer</a>
+    <a href="Carsome Studio - Agent.dc.html" style="padding:6px 12px;font-size:11px;font-weight:600;color:#c9c4b8;">Agent</a>
+    <span style="padding:6px 12px;font-size:11px;font-weight:700;color:#fff;background:#ff5a2b;border-radius:999px;">Admin</span>
+  </div>
+
+  <!-- ============ SIDEBAR ============ -->
+  <nav style="width:240px;flex-shrink:0;background:#fff;border-right:1px solid #efece5;display:flex;flex-direction:column;padding:22px 16px;">
+    <div style="display:flex;align-items:center;gap:10px;padding:0 8px 6px;">
+      <div style="width:32px;height:32px;border-radius:9px;background:#ff5a2b;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:13px;">CS</div>
+      <div style="font-size:15px;font-weight:700;letter-spacing:-0.2px;">Carsome Studio</div>
+    </div>
+    <div style="padding:0 8px 20px;">
+      <span style="background:#1f2b4d;color:#fff;font-size:10.5px;font-weight:700;letter-spacing:.04em;padding:3px 9px;border-radius:999px;text-transform:uppercase;">Admin</span>
+    </div>
+
+    <div style="display:flex;flex-direction:column;gap:2px;">
+      <sc-for list="{{ navItems }}" as="item" hint-placeholder-count="6">
+        <button onClick="{{ item.onClick }}" style="{{ item.style }}">
+          <span style="width:7px;height:7px;border-radius:50%;background:{{ item.dotColor }};flex-shrink:0;"></span>
+          {{ item.label }}
+          <sc-if value="{{ item.badge }}" hint-placeholder-val="{{ false }}">
+            <span style="margin-left:auto;background:#ff5a2b;color:#fff;font-size:10.5px;font-weight:700;border-radius:999px;padding:2px 7px;">{{ item.badge }}</span>
+          </sc-if>
+        </button>
+      </sc-for>
+    </div>
+
+    <div style="margin-top:auto;display:flex;align-items:center;gap:10px;padding:12px 8px;border-top:1px solid #efece5;">
+      <div style="width:32px;height:32px;border-radius:50%;background:#1f2b4d;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:#fff;">PA</div>
+      <div>
+        <div style="font-size:12.5px;font-weight:650;">Platform Admin</div>
+        <div style="font-size:11px;color:#8a8579;">Full access</div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- ============ MAIN ============ -->
+  <div style="flex:1;overflow-y:auto;padding:30px 40px 50px;">
+
+    <!-- ===== OVERVIEW ===== -->
+    <sc-if value="{{ isOverview }}" hint-placeholder-val="{{ true }}">
+      <div style="animation:adFadeIn .2s ease;">
+        <h1 style="font-size:26px;font-weight:700;letter-spacing:-0.4px;margin:0 0 4px;">Platform overview</h1>
+        <p style="font-size:14px;color:#8a8579;margin:0 0 28px;">Marketplace health across all agents and buyers.</p>
+
+        <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:32px;">
+          <sc-for list="{{ statCards }}" as="st" hint-placeholder-count="4">
+            <div style="background:#fff;border:1px solid #efece5;border-radius:16px;padding:18px 20px;">
+              <div style="font-size:12px;color:#8a8579;margin-bottom:8px;">{{ st.label }}</div>
+              <div style="font-size:26px;font-weight:700;letter-spacing:-0.5px;">{{ st.value }}</div>
+              <div style="font-size:12px;color:{{ st.deltaColor }};margin-top:6px;">{{ st.delta }}</div>
+            </div>
+          </sc-for>
+        </div>
+
+        <div style="display:grid;grid-template-columns:1.3fr 1fr;gap:16px;">
+          <div style="background:#fff;border:1px solid #efece5;border-radius:16px;padding:24px 26px;">
+            <div style="font-size:14.5px;font-weight:650;margin-bottom:18px;">Chatbot conversations, last 7 days</div>
+            <div style="display:flex;align-items:flex-end;gap:14px;height:120px;">
+              <sc-for list="{{ weekBars }}" as="bar" hint-placeholder-count="7">
+                <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:8px;height:100%;justify-content:flex-end;">
+                  <div style="width:100%;max-width:34px;background:#1f2b4d;border-radius:6px 6px 0 0;height:{{ bar.height }};opacity:.85;"></div>
+                  <div style="font-size:11px;color:#a8a396;">{{ bar.label }}</div>
+                </div>
+              </sc-for>
+            </div>
+          </div>
+          <div style="background:#fff;border:1px solid #efece5;border-radius:16px;padding:24px 26px;">
+            <div style="font-size:14.5px;font-weight:650;margin-bottom:16px;">Listings by state</div>
+            <div style="display:flex;flex-direction:column;gap:12px;">
+              <sc-for list="{{ stateRows }}" as="sr" hint-placeholder-count="5">
+                <div>
+                  <div style="display:flex;justify-content:space-between;font-size:12.5px;margin-bottom:5px;"><span>{{ sr.name }}</span><span style="color:#8a8579;">{{ sr.count }}</span></div>
+                  <div style="background:#f5f3ee;border-radius:999px;height:6px;overflow:hidden;"><div style="height:100%;border-radius:999px;background:#ff5a2b;width:{{ sr.width }};"></div></div>
+                </div>
+              </sc-for>
+            </div>
+          </div>
+        </div>
+      </div>
+    </sc-if>
+
+    <!-- ===== APPROVALS ===== -->
+    <sc-if value="{{ isApprovals }}" hint-placeholder-val="{{ false }}">
+      <div style="animation:adFadeIn .2s ease;">
+        <h1 style="font-size:26px;font-weight:700;letter-spacing:-0.4px;margin:0 0 4px;">Listing approvals</h1>
+        <p style="font-size:14px;color:#8a8579;margin:0 0 22px;">New listings wait here before going live.</p>
+        <sc-if value="{{ hasPending }}" hint-placeholder-val="{{ true }}">
+          <div style="display:flex;flex-direction:column;gap:12px;">
+            <sc-for list="{{ pending }}" as="p" hint-placeholder-count="3">
+              <div style="background:#fff;border:1px solid #efece5;border-radius:16px;padding:16px 20px;display:flex;align-items:center;gap:16px;">
+                <div style="width:64px;height:46px;border-radius:10px;background:repeating-linear-gradient(135deg,#f5f3ee,#f5f3ee 6px,#ece9e1 6px,#ece9e1 12px);flex-shrink:0;"></div>
+                <div style="flex:1;min-width:0;">
+                  <div style="font-size:14px;font-weight:650;">{{ p.title }}</div>
+                  <div style="font-size:12.5px;color:#8a8579;margin-top:2px;">{{ p.dealer }} · {{ p.priceFormatted }} · {{ p.city }}</div>
+                </div>
+                <div style="display:flex;gap:8px;flex-shrink:0;">
+                  <button onClick="{{ p.onReject }}" style="background:#fff;border:1px solid #efece5;border-radius:9px;padding:9px 16px;font-size:13px;font-weight:600;color:#a8503f;cursor:pointer;">Reject</button>
+                  <button onClick="{{ p.onApprove }}" style="background:#1f8a5b;border:none;border-radius:9px;padding:9px 16px;font-size:13px;font-weight:600;color:#fff;cursor:pointer;">Approve</button>
+                </div>
+              </div>
+            </sc-for>
+          </div>
+        </sc-if>
+        <sc-if value="{{ noPending }}" hint-placeholder-val="{{ false }}">
+          <div style="color:#a8a396;font-size:13.5px;padding:30px 0;text-align:center;">Queue is empty — nothing to review.</div>
+        </sc-if>
+      </div>
+    </sc-if>
+
+    <!-- ===== AGENTS ===== -->
+    <sc-if value="{{ isAgents }}" hint-placeholder-val="{{ false }}">
+      <div style="animation:adFadeIn .2s ease;">
+        <h1 style="font-size:26px;font-weight:700;letter-spacing:-0.4px;margin:0 0 4px;">Agents &amp; dealers</h1>
+        <p style="font-size:14px;color:#8a8579;margin:0 0 22px;">{{ agentsCount }} dealer accounts on the platform.</p>
+        <div style="background:#fff;border:1px solid #efece5;border-radius:16px;overflow:hidden;">
+          <div style="display:grid;grid-template-columns:2fr 1fr 1fr 1fr 1.4fr;gap:8px;padding:12px 20px;font-size:11.5px;color:#a8a396;font-weight:600;text-transform:uppercase;letter-spacing:.03em;border-bottom:1px solid #f5f3ee;">
+            <div>Dealer</div><div>Listings</div><div>Rating</div><div>Verified</div><div></div>
+          </div>
+          <sc-for list="{{ agents }}" as="a" hint-placeholder-count="5">
+            <div style="display:grid;grid-template-columns:2fr 1fr 1fr 1fr 1.4fr;gap:8px;padding:14px 20px;align-items:center;border-bottom:1px solid #f5f3ee;font-size:13.5px;">
+              <div style="display:flex;align-items:center;gap:10px;min-width:0;">
+                <div style="width:30px;height:30px;border-radius:50%;background:#f5f3ee;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#8a8579;flex-shrink:0;">{{ a.initials }}</div>
+                <span style="font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">{{ a.name }}</span>
+              </div>
+              <div style="color:#6f6a5d;">{{ a.listings }}</div>
+              <div style="color:#c5470f;">★ {{ a.rating }}</div>
+              <div><span style="{{ a.verifiedStyle }}">{{ a.verifiedLabel }}</span></div>
+              <div style="display:flex;gap:6px;justify-content:flex-end;">
+                <button onClick="{{ a.onToggleVerify }}" style="background:#f5f3ee;border:none;border-radius:7px;padding:6px 10px;font-size:12px;cursor:pointer;">{{ a.verifyActionLabel }}</button>
+                <button onClick="{{ a.onSuspend }}" style="background:#fff;border:1px solid #efece5;border-radius:7px;padding:6px 10px;font-size:12px;cursor:pointer;color:#a8503f;">{{ a.suspendLabel }}</button>
+              </div>
+            </div>
+          </sc-for>
+        </div>
+      </div>
+    </sc-if>
+
+    <!-- ===== BUYERS ===== -->
+    <sc-if value="{{ isBuyers }}" hint-placeholder-val="{{ false }}">
+      <div style="animation:adFadeIn .2s ease;">
+        <h1 style="font-size:26px;font-weight:700;letter-spacing:-0.4px;margin:0 0 4px;">Buyers</h1>
+        <p style="font-size:14px;color:#8a8579;margin:0 0 22px;">{{ buyersCount }} registered buyer accounts.</p>
+        <div style="background:#fff;border:1px solid #efece5;border-radius:16px;overflow:hidden;">
+          <div style="display:grid;grid-template-columns:2fr 1.5fr 1fr 1fr;gap:8px;padding:12px 20px;font-size:11.5px;color:#a8a396;font-weight:600;text-transform:uppercase;letter-spacing:.03em;border-bottom:1px solid #f5f3ee;">
+            <div>Buyer</div><div>Location</div><div>Conversations</div><div>Status</div>
+          </div>
+          <sc-for list="{{ buyers }}" as="b" hint-placeholder-count="6">
+            <div style="display:grid;grid-template-columns:2fr 1.5fr 1fr 1fr;gap:8px;padding:14px 20px;align-items:center;border-bottom:1px solid #f5f3ee;font-size:13.5px;">
+              <div style="display:flex;align-items:center;gap:10px;min-width:0;">
+                <div style="width:30px;height:30px;border-radius:50%;background:#f5f3ee;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#8a8579;flex-shrink:0;">{{ b.initials }}</div>
+                <span style="font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">{{ b.name }}</span>
+              </div>
+              <div style="color:#6f6a5d;">{{ b.location }}</div>
+              <div style="color:#6f6a5d;">{{ b.conversations }}</div>
+              <div><span style="background:#e9f5ee;color:#1f8a5b;font-size:11.5px;font-weight:650;padding:4px 10px;border-radius:999px;">Active</span></div>
+            </div>
+          </sc-for>
+        </div>
+      </div>
+    </sc-if>
+
+    <!-- ===== MODERATION ===== -->
+    <sc-if value="{{ isModeration }}" hint-placeholder-val="{{ false }}">
+      <div style="animation:adFadeIn .2s ease;">
+        <h1 style="font-size:26px;font-weight:700;letter-spacing:-0.4px;margin:0 0 4px;">Inbox moderation</h1>
+        <p style="font-size:14px;color:#8a8579;margin:0 0 22px;">Conversations flagged by keyword or user report.</p>
+        <div style="display:flex;flex-direction:column;gap:12px;">
+          <sc-for list="{{ flagged }}" as="f" hint-placeholder-count="3">
+            <div style="background:#fff;border:1px solid #efece5;border-radius:16px;padding:16px 20px;">
+              <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:16px;">
+                <div style="min-width:0;">
+                  <div style="font-size:13.5px;font-weight:650;">{{ f.buyer }} ↔ {{ f.dealer }}</div>
+                  <div style="font-size:12.5px;color:#8a8579;margin-top:4px;">"{{ f.snippet }}"</div>
+                  <div style="font-size:11.5px;color:#c5470f;margin-top:6px;font-weight:600;">Flag reason: {{ f.reason }}</div>
+                </div>
+                <div style="display:flex;gap:8px;flex-shrink:0;">
+                  <button onClick="{{ f.onDismiss }}" style="background:#f5f3ee;border:none;border-radius:8px;padding:8px 14px;font-size:12.5px;font-weight:600;cursor:pointer;">Dismiss</button>
+                  <button onClick="{{ f.onRemove }}" style="background:#fff;border:1px solid #efece5;border-radius:8px;padding:8px 14px;font-size:12.5px;font-weight:600;color:#a8503f;cursor:pointer;">Remove</button>
+                </div>
+              </div>
+            </div>
+          </sc-for>
+        </div>
+      </div>
+    </sc-if>
+
+    <!-- ===== AI CONFIG ===== -->
+    <sc-if value="{{ isAiConfig }}" hint-placeholder-val="{{ false }}">
+      <div style="animation:adFadeIn .2s ease;max-width:640px;">
+        <h1 style="font-size:26px;font-weight:700;letter-spacing:-0.4px;margin:0 0 4px;">Ask Carsome configuration</h1>
+        <p style="font-size:14px;color:#8a8579;margin:0 0 26px;">Tune how the chatbot talks, prices, and scores deals.</p>
+
+        <div style="background:#fff;border:1px solid #efece5;border-radius:16px;padding:22px 26px;margin-bottom:16px;">
+          <div style="font-size:14.5px;font-weight:650;margin-bottom:16px;">Assistant tone</div>
+          <div style="display:flex;gap:8px;">
+            <sc-for list="{{ toneOptions }}" as="t" hint-placeholder-count="3">
+              <button onClick="{{ t.onClick }}" style="{{ t.style }}">{{ t.label }}</button>
+            </sc-for>
+          </div>
+        </div>
+
+        <div style="background:#fff;border:1px solid #efece5;border-radius:16px;padding:22px 26px;margin-bottom:16px;">
+          <div style="font-size:14.5px;font-weight:650;margin-bottom:16px;">Default language</div>
+          <div style="display:flex;gap:8px;">
+            <sc-for list="{{ langOptions }}" as="l" hint-placeholder-count="3">
+              <button onClick="{{ l.onClick }}" style="{{ l.style }}">{{ l.label }}</button>
+            </sc-for>
+          </div>
+        </div>
+
+        <div style="background:#fff;border:1px solid #efece5;border-radius:16px;padding:22px 26px;margin-bottom:16px;">
+          <div style="font-size:14.5px;font-weight:650;margin-bottom:6px;">DealScore weighting</div>
+          <p style="font-size:12.5px;color:#8a8579;margin:0 0 16px;">How much price-vs-market counts toward every DealScore.</p>
+          <div style="display:flex;align-items:center;gap:14px;">
+            <input type="range" min="20" max="70" value="{{ priceWeight }}" onChange="{{ onPriceWeight }}" style="flex:1;" />
+            <span style="font-size:13.5px;font-weight:650;width:38px;text-align:right;">{{ priceWeight }}%</span>
+          </div>
+        </div>
+
+        <div style="background:#fff;border:1px solid #efece5;border-radius:16px;padding:22px 26px;margin-bottom:16px;">
+          <div style="font-size:14.5px;font-weight:650;margin-bottom:6px;">Loan estimate assumptions</div>
+          <p style="font-size:12.5px;color:#8a8579;margin:0 0 16px;">Flat interest rate applied to every monthly-installment estimate.</p>
+          <div style="display:flex;align-items:center;gap:14px;">
+            <input type="range" min="1" max="8" step="0.5" value="{{ interestRate }}" onChange="{{ onInterestRate }}" style="flex:1;" />
+            <span style="font-size:13.5px;font-weight:650;width:44px;text-align:right;">{{ interestRate }}%</span>
+          </div>
+        </div>
+
+        <div style="background:#fff;border:1px solid #efece5;border-radius:16px;padding:22px 26px;display:flex;justify-content:space-between;align-items:center;">
+          <div>
+            <div style="font-size:14.5px;font-weight:650;">Offline fallback parser</div>
+            <p style="font-size:12.5px;color:#8a8579;margin:4px 0 0;">Keep the chatbot answering with a regex parser if the AI API is unreachable.</p>
+          </div>
+          <button onClick="{{ toggleFallback }}" style="{{ fallbackToggleStyle }}"><span style="{{ fallbackKnobStyle }}"></span></button>
+        </div>
+      </div>
+    </sc-if>
+
+  </div>
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+
+function fmtRM(n) { return 'RM' + Math.round(n).toLocaleString('en-MY'); }
+function initials(name) { return name.split(' ').map(w => w[0]).slice(0,2).join('').toUpperCase(); }
+
+class Component extends DCLogic {
+  state = {
+    tab: 'overview',
+    pending: [
+      { id: 1, title: '2020 Mazda CX-5 2.5 GLS', dealer: 'Southern Wheels', price: 98000, city: 'Skudai' },
+      { id: 2, title: '2019 Nissan Almera 1.5 VL', dealer: 'CK Auto City', price: 52000, city: 'Klang' },
+      { id: 3, title: '2021 BMW 218i Gran Coupe', dealer: 'WS Premium Motors', price: 168000, city: 'Petaling Jaya' },
+    ],
+    agents: [
+      { id: 1, name: 'Faizal Auto Trading', listings: 14, rating: '4.7', verified: true, suspended: false },
+      { id: 2, name: 'WS Premium Motors', listings: 22, rating: '4.8', verified: true, suspended: false },
+      { id: 3, name: 'CK Auto City', listings: 9, rating: '4.4', verified: true, suspended: false },
+      { id: 4, name: 'Southern Wheels', listings: 11, rating: '4.4', verified: true, suspended: false },
+      { id: 5, name: 'Nurul Huda (Private)', listings: 1, rating: '4.5', verified: false, suspended: false },
+    ],
+    buyers: [
+      { id: 1, name: 'Daniel Chow', location: 'Kuala Lumpur', conversations: 6 },
+      { id: 2, name: 'Aina Sofea', location: 'Petaling Jaya', conversations: 3 },
+      { id: 3, name: 'Marcus Yap', location: 'George Town', conversations: 9 },
+      { id: 4, name: 'Farhan Ismail', location: 'Johor Bahru', conversations: 2 },
+      { id: 5, name: 'Jessica Lau', location: 'Kuching', conversations: 4 },
+      { id: 6, name: 'Kavitha Rajan', location: 'Ipoh', conversations: 1 },
+    ],
+    flagged: [
+      { id: 1, buyer: 'Marcus Yap', dealer: 'Southern Wheels', snippet: "Can we settle this outside the app, cash only?", reason: 'Off-platform payment', dismissed: false },
+      { id: 2, buyer: 'Farhan Ismail', dealer: 'Raja Kumar', snippet: "This price is a scam, you're not the real owner", reason: 'User report', dismissed: false },
+    ],
+    toneKey: 'friendly',
+    langKey: 'en',
+    priceWeight: 40,
+    interestRate: 3.5,
+    fallbackOn: true,
+  };
+
+  approve(id) { this.setState(s => ({ pending: s.pending.filter(p => p.id !== id) })); }
+  reject(id) { this.setState(s => ({ pending: s.pending.filter(p => p.id !== id) })); }
+  toggleVerify(id) { this.setState(s => ({ agents: s.agents.map(a => a.id===id ? {...a, verified: !a.verified} : a) })); }
+  toggleSuspend(id) { this.setState(s => ({ agents: s.agents.map(a => a.id===id ? {...a, suspended: !a.suspended} : a) })); }
+  dismissFlag(id) { this.setState(s => ({ flagged: s.flagged.filter(f => f.id !== id) })); }
+
+  renderVals() {
+    const s = this.state;
+    const navDefs = [
+      { key: 'overview', label: 'Overview' },
+      { key: 'approvals', label: 'Approvals', badge: s.pending.length },
+      { key: 'agents', label: 'Agents & Dealers' },
+      { key: 'buyers', label: 'Buyers' },
+      { key: 'moderation', label: 'Inbox moderation', badge: s.flagged.length },
+      { key: 'aiConfig', label: 'AI Assistant' },
+    ];
+    const navItems = navDefs.map(n => ({
+      label: n.label, badge: n.badge || null,
+      dotColor: s.tab === n.key ? '#ff5a2b' : '#e4e1da',
+      onClick: () => this.setState({ tab: n.key }),
+      style: `display:flex;align-items:center;gap:10px;width:100%;text-align:left;border:none;background:${s.tab===n.key?'#f5f3ee':'transparent'};color:${s.tab===n.key?'#1a1a1a':'#6f6a5d'};font-weight:${s.tab===n.key?650:500};font-size:13.5px;padding:10px 12px;border-radius:10px;cursor:pointer;`,
+    }));
+
+    const pending = s.pending.map(p => ({
+      title: p.title, dealer: p.dealer, priceFormatted: fmtRM(p.price), city: p.city,
+      onApprove: () => this.approve(p.id), onReject: () => this.reject(p.id),
+    }));
+
+    const agents = s.agents.map(a => ({
+      name: a.name, initials: initials(a.name), listings: a.listings, rating: a.rating,
+      verifiedLabel: a.suspended ? 'Suspended' : (a.verified ? 'Verified' : 'Unverified'),
+      verifiedStyle: `font-size:11.5px;font-weight:650;padding:4px 10px;border-radius:999px;background:${a.suspended?'#f1efe9':a.verified?'#e9f5ee':'#fdf3e3'};color:${a.suspended?'#8a8579':a.verified?'#1f8a5b':'#c9922e'};`,
+      verifyActionLabel: a.verified ? 'Unverify' : 'Verify',
+      onToggleVerify: () => this.toggleVerify(a.id),
+      suspendLabel: a.suspended ? 'Reinstate' : 'Suspend',
+      onSuspend: () => this.toggleSuspend(a.id),
+    }));
+
+    const buyers = s.buyers.map(b => ({ name: b.name, initials: initials(b.name), location: b.location, conversations: b.conversations }));
+
+    const flagged = s.flagged.map(f => ({ buyer: f.buyer, dealer: f.dealer, snippet: f.snippet, reason: f.reason, onDismiss: () => this.dismissFlag(f.id), onRemove: () => this.dismissFlag(f.id) }));
+
+    const weekLabels = ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
+    const weekData = [420, 505, 468, 610, 720, 390, 340];
+    const maxWeek = Math.max(...weekData);
+    const weekBars = weekData.map((v,i) => ({ label: weekLabels[i], height: Math.round((v/maxWeek)*100)+'%' }));
+
+    const stateData = [
+      { name: 'Selangor', count: 1240 }, { name: 'Kuala Lumpur', count: 860 }, { name: 'Johor', count: 610 },
+      { name: 'Penang', count: 540 }, { name: 'Sabah', count: 310 },
+    ];
+    const maxState = Math.max(...stateData.map(x=>x.count));
+    const stateRows = stateData.map(x => ({ name: x.name, count: x.count.toLocaleString('en-MY'), width: Math.round((x.count/maxState)*100)+'%' }));
+
+    const toneOpt = (key, label) => ({ label, onClick: () => this.setState({ toneKey: key }), style: `flex:1;padding:10px 0;border-radius:10px;border:1px solid ${s.toneKey===key?'#ff5a2b':'#efece5'};background:${s.toneKey===key?'#fff3ec':'#fff'};color:${s.toneKey===key?'#c5470f':'#1a1a1a'};font-size:13px;font-weight:600;cursor:pointer;` });
+    const langOpt = (key, label) => ({ label, onClick: () => this.setState({ langKey: key }), style: `flex:1;padding:10px 0;border-radius:10px;border:1px solid ${s.langKey===key?'#ff5a2b':'#efece5'};background:${s.langKey===key?'#fff3ec':'#fff'};color:${s.langKey===key?'#c5470f':'#1a1a1a'};font-size:13px;font-weight:600;cursor:pointer;` });
+
+    return {
+      isOverview: s.tab==='overview', isApprovals: s.tab==='approvals', isAgents: s.tab==='agents', isBuyers: s.tab==='buyers', isModeration: s.tab==='moderation', isAiConfig: s.tab==='aiConfig',
+      navItems,
+      statCards: [
+        { label: 'GMV this month', value: 'RM 8.4M', delta: '+11.2% vs last month', deltaColor: '#1f8a5b' },
+        { label: 'Active listings', value: '3,482', delta: '+164 this week', deltaColor: '#1f8a5b' },
+        { label: 'Chatbot conversations', value: '12,930', delta: '+6.8% vs last week', deltaColor: '#1f8a5b' },
+        { label: 'Buy conversion', value: '9.3%', delta: '-0.4pp vs last week', deltaColor: '#a8503f' },
+      ],
+      weekBars, stateRows,
+      hasPending: s.pending.length > 0, noPending: s.pending.length === 0, pending,
+      agentsCount: s.agents.length, agents,
+      buyersCount: s.buyers.length, buyers,
+      flagged,
+      toneOptions: [toneOpt('friendly','Friendly'), toneOpt('professional','Professional'), toneOpt('concise','Concise')],
+      langOptions: [langOpt('en','English default'), langOpt('ms','Bahasa Melayu default'), langOpt('zh','中文 default')],
+      priceWeight: s.priceWeight, onPriceWeight: (e) => this.setState({ priceWeight: parseInt(e.target.value,10) }),
+      interestRate: s.interestRate, onInterestRate: (e) => this.setState({ interestRate: parseFloat(e.target.value) }),
+      fallbackOn: s.fallbackOn,
+      toggleFallback: () => this.setState(p => ({ fallbackOn: !p.fallbackOn })),
+      fallbackToggleStyle: `width:46px;height:26px;border-radius:999px;border:none;padding:3px;cursor:pointer;background:${s.fallbackOn?'#ff5a2b':'#e4e1da'};display:flex;justify-content:${s.fallbackOn?'flex-end':'flex-start'};`,
+      fallbackKnobStyle: `display:block;width:20px;height:20px;border-radius:50%;background:#fff;`,
+    };
+  }
+}
+
+</script>
+</body>
+</html>
