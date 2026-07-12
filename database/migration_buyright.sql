@@ -49,7 +49,7 @@ CREATE TABLE IF NOT EXISTS inspections (
 CREATE TABLE IF NOT EXISTS offers (
   id             SERIAL PRIMARY KEY,
   submission_id  INTEGER REFERENCES car_submissions(id) ON DELETE CASCADE,
-  offer_price    NUMERIC(12,2) NOT NULL,
+  offer_price    NUMERIC(12,2) NOT NULL CHECK (offer_price > 0),
   notes          TEXT,
   expires_at     TIMESTAMP,
   status         VARCHAR(20) NOT NULL DEFAULT 'pending',
@@ -79,3 +79,10 @@ DROP TRIGGER IF EXISTS update_car_submissions_updated_at ON car_submissions;
 CREATE TRIGGER update_car_submissions_updated_at
   BEFORE UPDATE ON car_submissions
   FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
+
+-- Indexes on FK columns (PostgreSQL does not auto-index FKs)
+CREATE INDEX IF NOT EXISTS idx_car_submissions_user_id ON car_submissions(user_id);
+CREATE INDEX IF NOT EXISTS idx_inspections_submission_id ON inspections(submission_id);
+CREATE INDEX IF NOT EXISTS idx_offers_submission_id ON offers(submission_id);
+CREATE INDEX IF NOT EXISTS idx_enquiries_user_id ON enquiries(user_id);
+CREATE INDEX IF NOT EXISTS idx_enquiries_car_id ON enquiries(car_id);
