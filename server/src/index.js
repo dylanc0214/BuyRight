@@ -8,6 +8,8 @@ const carsRouter = require('./routes/cars');
 const authRouter = require('./routes/auth');
 const submissionsRouter = require('./routes/submissions');
 const offersRouter = require('./routes/offers');
+const enquiriesRouter = require('./routes/enquiries');
+const adminRouter = require('./routes/admin');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -20,6 +22,8 @@ app.use('/api/chat', chatRouter);
 app.use('/api/cars', carsRouter);
 app.use('/api/submissions', submissionsRouter);
 app.use('/api/offers', offersRouter);
+app.use('/api/enquiries', enquiriesRouter);
+app.use('/api/admin', adminRouter);
 
 app.get('/api/health', async (req, res) => {
   try {
@@ -30,9 +34,7 @@ app.get('/api/health', async (req, res) => {
   }
 });
 
-app.use((req, res) => {
-  res.status(404).json({ success: false, error: 'Route not found.' });
-});
+app.use((req, res) => res.status(404).json({ success: false, error: 'Route not found.' }));
 
 // eslint-disable-next-line no-unused-vars
 app.use((err, req, res, _next) => {
@@ -41,9 +43,7 @@ app.use((err, req, res, _next) => {
 });
 
 if (process.env.NODE_ENV !== 'test') {
-  app.listen(PORT, () => {
-    console.log(`BuyRight API running on http://localhost:${PORT}`);
-  });
+  app.listen(PORT, () => console.log(`BuyRight API running on http://localhost:${PORT}`));
 }
 
 module.exports = app;
