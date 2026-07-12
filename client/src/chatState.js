@@ -1,107 +1,56 @@
-import { useState, useCallback, useEffect } from 'react';
+// client/src/chatState.js
+import { useState, useEffect } from 'react';
 import { postChat } from './utils/api';
-import { loadJSON, saveJSON, removeKeys } from './utils/storage';
 
-const KEY_MESSAGES = 'keretaai_messages';
-const KEY_CONV_ID = 'keretaai_conversation_id';
-const MAX_PERSISTED = 50;
+const STORAGE_KEY = 'br_conv';
 
-export function getWelcomeMessage(lang) {
-  const content = {
-    en: "Hi! I'm **KeretaAI** 🚗 — your AI for second-hand cars in Malaysia.\n\n**Buying?** Tell me your budget, brand, or body type.\n**Selling?** Describe your car and I'll suggest a fair price from live comparable listings.",
-    ms: 'Hai! Saya **KeretaAI** 🚗 — AI untuk kereta terpakai di Malaysia.\n\n**Nak beli?** Beritahu bajet, jenama, atau jenis kereta.\n**Nak jual?** Terangkan kereta anda dan saya cadangkan harga berpatutan berdasarkan senarai sebenar.',
-    zh: '您好！我是 **KeretaAI** 🚗 — 马来西亚二手车AI助手。\n\n**想买车？**告诉我您的预算、品牌或车型。\n**想卖车？**描述您的车，我会根据在售的同款车建议一个合理价格。',
-  };
-  const suggestedOptions = {
-    en: ['SUV under RM100k', 'Cheapest Perodua Myvi', 'Family MPV in Selangor', 'I want to sell my car'],
-    ms: ['SUV bawah RM100k', 'Perodua Myvi paling murah', 'MPV keluarga di Selangor', 'Saya nak jual kereta'],
-    zh: ['10万以下的SUV', '最便宜的 Perodua Myvi', '雪兰莪的家庭MPV', '我想卖车'],
-  };
-  return {
-    id: 'welcome',
-    role: 'assistant',
-    content: content[lang] || content.en,
-    type: 'text',
-    timestamp: new Date().toISOString(),
-    cars: [],
-    suggestedOptions: suggestedOptions[lang] || suggestedOptions.en,
-  };
+const WELCOME = {
+  en: { role: 'assistant', content: "Hi! I'm BuyRight AI. I can help you find the perfect certified used car from our inventory, or guide you through selling your car to us. What are you looking for?\n\n[OPTIONS]Browse SUVs|Cars under RM 80k|Sell my car|What can you do?[/OPTIONS]", cars: [], suggestedOptions: ['Browse SUVs', 'Cars under RM 80k', 'Sell my car', 'What can you do?'] },
+  ms: { role: 'assistant', content: "Hai! Saya BuyRight AI. Saya boleh bantu cari kereta terpakai atau panduan untuk jual kereta anda kepada kami. Apa yang anda cari?\n\n[OPTIONS]SUV bawah RM 80k|Kereta murah|Jual kereta saya[/OPTIONS]", cars: [], suggestedOptions: ['SUV bawah RM 80k', 'Kereta murah', 'Jual kereta saya'] },
+  zh: { role: 'assistant', content: "你好！我是 BuyRight AI。我可以帮您找到合适的认证二手车，或指导您将车卖给我们。您在寻找什么？\n\n[OPTIONS]10万以下SUV|便宜的车|我想卖车[/OPTIONS]", cars: [], suggestedOptions: ['10万以下SUV', '便宜的车', '我想卖车'] },
+};
+
+function stripOptions(content) {
+  return content.replace(/\[OPTIONS\].*?\[\/OPTIONS\]/gs, '').trim();
 }
 
 export function useChat(language = 'en') {
-  const [messages, setMessages] = useState(() => {
-    const saved = loadJSON(KEY_MESSAGES);
-    return Array.isArray(saved) && saved.length > 0 ? saved : [getWelcomeMessage(language)];
-  });
-  const [conversationId, setConversationId] = useState(() => loadJSON(KEY_CONV_ID));
+  const stored = (() => { try { return JSON.parse(localStorage.getItem(STORAGE_KEY)) || {}; } catch { return {}; } })();
+  const welcome = WELCOME[language] || WELCOME.en;
+
+  const [messages, setMessages] = useState(() => stored.messages?.length ? stored.messages : [{ ...welcome, content: stripOptions(welcome.content) }]);
+  const [conversationId, setConversationId] = useState(() => stored.conversationId || null);
   const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
-    saveJSON(KEY_MESSAGES, messages.slice(-MAX_PERSISTED));
-  }, [messages]);
+    localStorage.setItem(STORAGE_KEY, JSON.stringify({ messages, conversationId }));
+  }, [messages, conversationId]);
 
-  useEffect(() => {
-    if (conversationId) saveJSON(KEY_CONV_ID, conversationId);
-  }, [conversationId]);
-
-  // Swap the welcome message when the language changes (only on an untouched chat)
-  useEffect(() => {
-    setMessages((prev) =>
-      prev.length === 1 && prev[0].id === 'welcome' ? [getWelcomeMessage(language)] : prev
-    );
-  }, [language]);
-
-  const sendMessage = useCallback(async (text) => {
-    const trimmed = (text || '').trim();
-    if (!trimmed || isLoading) return;
-
-    setMessages((prev) => [...prev, {
-      id: `u-${Date.now()}`,
-      role: 'user',
-      content: trimmed,
-      type: 'text',
-      timestamp: new Date().toISOString(),
-      cars: [],
-      suggestedOptions: [],
-    }]);
+  async function sendMessage(text) {
+    const userMsg = { role: 'user', content: text, cars: [], suggestedOptions: [] };
+    setMessages((m) => [...m, userMsg]);
     setIsLoading(true);
-
     try {
-      const data = await postChat({ message: trimmed, conversationId, language });
-      if (data.conversationId) setConversationId(data.conversationId);
-      setMessages((prev) => [...prev, {
-        id: `a-${Date.now()}`,
+      const data = await postChat({ message: text, conversationId, language });
+      setConversationId(data.conversationId);
+      setMessages((m) => [...m, {
         role: 'assistant',
-        content: data.message || '…',
-        type: data.type || 'text',
-        timestamp: new Date().toISOString(),
+        content: data.message,
         cars: data.cars || [],
         suggestedOptions: data.suggestedOptions || [],
-        totalResults: data.totalResults,
-        relaxedNotes: data.relaxedNotes || [],
-        estimate: data.estimate || null,
-        aiStatus: data.aiStatus,
       }]);
     } catch {
-      setMessages((prev) => [...prev, {
-        id: `e-${Date.now()}`,
-        role: 'assistant',
-        content: "Sorry, I couldn't reach the server. Make sure the backend is running, then try again.",
-        type: 'error',
-        timestamp: new Date().toISOString(),
-        cars: [],
-        suggestedOptions: [],
-      }]);
+      setMessages((m) => [...m, { role: 'assistant', content: "Sorry, I'm having trouble right now. Please try again.", cars: [], suggestedOptions: [] }]);
     } finally {
       setIsLoading(false);
     }
-  }, [conversationId, language, isLoading]);
+  }
 
-  const newChat = useCallback(() => {
-    setMessages([getWelcomeMessage(language)]);
+  function newChat() {
+    localStorage.removeItem(STORAGE_KEY);
+    setMessages([{ ...welcome, content: stripOptions(welcome.content) }]);
     setConversationId(null);
-    removeKeys([KEY_MESSAGES, KEY_CONV_ID]);
-  }, [language]);
+  }
 
-  return { messages, isLoading, sendMessage, newChat };
+  return { messages, isLoading, sendMessage, newChat, conversationId };
 }
