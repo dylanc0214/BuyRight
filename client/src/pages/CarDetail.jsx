@@ -52,7 +52,7 @@ export default function CarDetail() {
       <div className="container" style={{ paddingTop: 40, paddingBottom: 60 }}>
         <Link to="/cars" style={{ color: 'var(--text-secondary)', fontSize: 14, display: 'inline-block', marginBottom: 24 }}>← Back to browse</Link>
 
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 360px', gap: 40, alignItems: 'start' }}>
+        <div className="responsive-2col" style={{ display: 'grid', gridTemplateColumns: '1fr 360px', gap: 40, alignItems: 'start' }}>
           {/* Left */}
           <div>
             {/* Main image */}
@@ -94,14 +94,14 @@ export default function CarDetail() {
           </div>
 
           {/* Right sticky panel */}
-          <div style={{ position: 'sticky', top: 80 }}>
+          <div className="reorder-first" style={{ position: 'sticky', top: 80 }}>
             <div className="card" style={{ padding: 24 }}>
               <div style={{ fontSize: 13, color: 'var(--text-faint)', marginBottom: 4 }}>BuyRight Certified</div>
               <h1 style={{ fontSize: 20, fontWeight: 800, marginBottom: 6, lineHeight: 1.3 }}>{car.title}</h1>
               <div style={{ color: 'var(--primary)', fontWeight: 800, fontSize: 30, marginBottom: 4 }}>{car.priceFormatted}</div>
               {car.monthlyEstimateFormatted && (
                 <div style={{ color: 'var(--text-secondary)', fontSize: 13, marginBottom: 20 }}>
-                  Est. {car.monthlyEstimateFormatted}/mo (90% loan, 9yr)
+                  Est. {car.monthlyEstimateFormatted} (90% loan, 9yr)
                 </div>
               )}
 
@@ -129,8 +129,8 @@ export default function CarDetail() {
 
       {/* Contact modal */}
       {showModal && (
-        <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.45)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 200 }}>
-          <div className="card" style={{ width: 420, padding: 28 }}>
+        <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.45)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 200, padding: 16 }}>
+          <div className="card" style={{ width: '100%', maxWidth: 420, padding: 28 }}>
             {submitted ? (
               <div style={{ textAlign: 'center', padding: '20px 0' }}>
                 <div style={{ fontSize: 40, marginBottom: 16 }}>✅</div>

@@ -12,6 +12,7 @@ export default function Buyers() {
       <h1 style={{ fontSize: 22, fontWeight: 800, marginBottom: 24 }}>Buyers</h1>
       {loading ? <p style={{ color: 'var(--text-faint)' }}>Loading…</p> : (
         <div className="card" style={{ overflow: 'hidden' }}>
+          <div className="table-scroll">
           <table style={{ width: '100%', borderCollapse: 'collapse' }}>
             <thead>
               <tr style={{ background: 'var(--bg-muted)' }}>
@@ -32,6 +33,7 @@ export default function Buyers() {
               ))}
             </tbody>
           </table>
+          </div>
         </div>
       )}
     </div>

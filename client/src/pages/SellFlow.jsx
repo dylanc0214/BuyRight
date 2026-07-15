@@ -129,7 +129,7 @@ export default function SellFlow() {
 
         {/* STEP 1 */}
         {step === 1 && (
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 300px', gap: 32, alignItems: 'start' }}>
+          <div className="responsive-2col" style={{ display: 'grid', gridTemplateColumns: '1fr 300px', gap: 32, alignItems: 'start' }}>
             <div className="card" style={{ padding: 28 }}>
               <h2 style={{ fontSize: 20, fontWeight: 800, marginBottom: 24 }}>Tell us about your car</h2>
               <form onSubmit={handleStep1Submit} style={{ display: 'flex', flexDirection: 'column', gap: 18 }}>

@@ -36,7 +36,7 @@ export default function Offers() {
         <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
           {queue.map((s) => (
             <div key={s.id} className="card" style={{ padding: 20 }}>
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 200px auto', gap: 16, alignItems: 'end' }}>
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(180px,1fr))', gap: 16, alignItems: 'end' }}>
                 <div>
                   <div style={{ fontWeight: 700, fontSize: 15 }}>{s.year} {s.brand} {s.model}</div>
                   <div style={{ color: 'var(--text-secondary)', fontSize: 13 }}>{Number(s.mileage_km).toLocaleString()} km · {s.condition}</div>

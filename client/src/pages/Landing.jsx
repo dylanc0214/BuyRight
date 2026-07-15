@@ -41,7 +41,7 @@ export default function Landing() {
           <div style={{ display: 'inline-block', background: 'var(--primary-soft)', color: 'var(--primary)', fontWeight: 600, fontSize: 13, padding: '5px 14px', borderRadius: 'var(--radius-pill)', marginBottom: 20, border: '1px solid var(--primary-border)' }}>
             Certified Used Cars · Malaysia
           </div>
-          <h1 style={{ fontSize: 48, fontWeight: 800, lineHeight: 1.15, color: 'var(--text)', marginBottom: 18, letterSpacing: '-1px' }}>
+          <h1 style={{ fontSize: 'clamp(30px, 8vw, 48px)', fontWeight: 800, lineHeight: 1.15, color: 'var(--text)', marginBottom: 18, letterSpacing: '-1px' }}>
             Buy smart.<br />Sell right.
           </h1>
           <p style={{ fontSize: 18, color: 'var(--text-secondary)', lineHeight: 1.7, marginBottom: 36 }}>

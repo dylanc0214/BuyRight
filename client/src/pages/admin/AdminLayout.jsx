@@ -1,4 +1,5 @@
 // client/src/pages/admin/AdminLayout.jsx
+import { useState } from 'react';
 import { NavLink, Outlet, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 
@@ -16,13 +17,22 @@ const NAV = [
 export default function AdminLayout() {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
+  const [sidebarOpen, setSidebarOpen] = useState(false);
 
   function handleLogout() { logout(); navigate('/'); }
 
   return (
-    <div style={{ display: 'flex', height: '100vh', background: 'var(--bg)' }}>
+    <div className="admin-shell" style={{ display: 'flex', height: '100vh', background: 'var(--bg)' }}>
+      {/* Mobile top bar */}
+      <div className="admin-mobile-bar">
+        <button onClick={() => setSidebarOpen(true)} aria-label="Open menu" style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: 20 }}>☰</button>
+        <span style={{ fontWeight: 700, fontSize: 15 }}>BuyRight Admin</span>
+      </div>
+
+      {sidebarOpen && <div className="admin-backdrop open" onClick={() => setSidebarOpen(false)} />}
+
       {/* Sidebar */}
-      <aside style={{ width: 240, background: 'var(--surface)', borderRight: '1px solid var(--border)', display: 'flex', flexDirection: 'column', flexShrink: 0 }}>
+      <aside className={`admin-sidebar${sidebarOpen ? ' open' : ''}`} style={{ width: 240, background: 'var(--surface)', borderRight: '1px solid var(--border)', display: 'flex', flexDirection: 'column', flexShrink: 0 }}>
         {/* Brand */}
         <div style={{ padding: '20px 20px 16px', borderBottom: '1px solid var(--border)' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
@@ -35,7 +45,7 @@ export default function AdminLayout() {
         </div>
 
         {/* Nav */}
-        <nav style={{ flex: 1, padding: '12px 10px', overflowY: 'auto' }}>
+        <nav style={{ flex: 1, padding: '12px 10px', overflowY: 'auto' }} onClick={() => setSidebarOpen(false)}>
           {NAV.map(({ to, label, exact }) => (
             <NavLink
               key={to}

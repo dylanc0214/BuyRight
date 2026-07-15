@@ -54,7 +54,7 @@ export default function CarBrowse() {
   }
 
   return (
-    <div className="page" style={{ display: 'flex' }}>
+    <div className="page browse-layout" style={{ display: 'flex' }}>
       {/* Sidebar */}
       <aside style={{
         width: 240, flexShrink: 0, borderRight: '1px solid var(--border)',

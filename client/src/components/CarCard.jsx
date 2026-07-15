@@ -44,7 +44,7 @@ export default function CarCard({ car, onClick }) {
         </div>
         {car.monthlyEstimateFormatted && (
           <div style={{ color: 'var(--text-faint)', fontSize: 12 }}>
-            Est. {car.monthlyEstimateFormatted}/mo · 9yr loan
+            Est. {car.monthlyEstimateFormatted} · 9yr loan
           </div>
         )}
         {car.city && (

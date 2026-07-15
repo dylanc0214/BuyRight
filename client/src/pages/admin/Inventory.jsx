@@ -45,6 +45,7 @@ export default function Inventory() {
       </div>
       {loading ? <p style={{ color: 'var(--text-faint)' }}>Loading…</p> : (
         <div className="card" style={{ overflow: 'hidden' }}>
+          <div className="table-scroll">
           <table style={{ width: '100%', borderCollapse: 'collapse' }}>
             <thead>
               <tr style={{ background: 'var(--bg-muted)' }}>
@@ -72,6 +73,7 @@ export default function Inventory() {
               ))}
             </tbody>
           </table>
+          </div>
         </div>
       )}
 

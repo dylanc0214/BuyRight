@@ -19,7 +19,7 @@ export default function Overview() {
   return (
     <div style={{ padding: 32 }}>
       <h1 style={{ fontSize: 22, fontWeight: 800, marginBottom: 28 }}>Overview</h1>
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4,1fr)', gap: 16, marginBottom: 32 }}>
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(140px,1fr))', gap: 16, marginBottom: 32 }}>
         <StatCard label="Total submissions"  value={data?.submissions}    sub="all time" />
         <StatCard label="Live inventory"     value={data?.inventory}      sub="available cars" />
         <StatCard label="Registered buyers"  value={data?.buyers}         sub="user accounts" />

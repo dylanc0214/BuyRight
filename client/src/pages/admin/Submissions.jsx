@@ -40,6 +40,7 @@ export default function Submissions() {
       <h1 style={{ fontSize: 22, fontWeight: 800, marginBottom: 24 }}>Submissions</h1>
       {loading ? <p style={{ color: 'var(--text-faint)' }}>Loading…</p> : (
         <div className="card" style={{ overflow: 'hidden' }}>
+          <div className="table-scroll">
           <table style={{ width: '100%', borderCollapse: 'collapse' }}>
             <thead>
               <tr style={{ background: 'var(--bg-muted)' }}>
@@ -78,12 +79,13 @@ export default function Submissions() {
               ))}
             </tbody>
           </table>
+          </div>
         </div>
       )}
 
       {offerModal && (
-        <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.4)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 200 }}>
-          <div className="card" style={{ width: 400, padding: 28 }}>
+        <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.4)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 200, padding: 16 }}>
+          <div className="card" style={{ width: '100%', maxWidth: 400, padding: 28 }}>
             <h3 style={{ fontWeight: 700, fontSize: 17, marginBottom: 4 }}>Send offer</h3>
             <p style={{ color: 'var(--text-secondary)', fontSize: 13, marginBottom: 20 }}>{offerModal.year} {offerModal.brand} {offerModal.model}</p>
             <div style={{ marginBottom: 14 }}>
